@@ -1,0 +1,37 @@
+Name: c_comp
+Version: 0.1
+Synopsis: A tiny c compiler
+Authors: Sailik Kundu
+License: MIT
+
+Description: A simple compiler for a subset of C
+
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+
+Executable "c_comp"
+    Path: src
+    MainIs: c_comp.ml
+    BuildDepends:
+        str, batteries
+
+#export modules as a lib so we can test them
+Library "c_comp_lib"
+    Path: src
+    Modules: Lex, Parse, Gen
+    BuildDepends:
+        batteries
+
+Executable "test_c_comp"
+    Path: tst
+    MainIs: test_c_comp.ml
+    Build$: flag(tests)
+    Install: false
+    BuildDepends:
+        oUnit, c_comp_lib
+
+Test "test_c_comp"
+    TestTools: test_c_comp
+    Command: $test_c_comp
+    WorkingDirectory: tst
